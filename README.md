@@ -7,23 +7,42 @@
 ## Install
 
 ```bash
-npm install --save use-inputs
+npm install --save @bellawatt/use-inputs
 ```
 
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react'
+import { Inputs } from '@bellawatt/use-inputs'
+import ChildComponent from './ChildComponent'
 
-import MyComponent from 'use-inputs'
+const ParentComponent = () => (
+  <Inputs defaults={{name: 'Brandon'}}>
+    <ChildComponent />
+  </Inputs>
+)
 
-class Example extends Component {
-  render () {
-    return (
-      <MyComponent />
-    )
-  }
+export default ParentComponent
+
+```
+
+```jsx
+import React from 'react'
+import { useInputs } from '@bellawatt/use-inputs'
+
+const ChildComponent = () => {
+  const { setInput, name } = useInputs()
+
+  return (
+    <label>
+      Name
+      <input type="text" value={name} onChange={e => setInput({name: e.currentTarget.value})} />
+    </label>
+  )
 }
+
+export default ChildComponent
 ```
 
 ## License

@@ -1,13 +1,18 @@
-import React, { Component } from 'react'
+import React from 'react'
+import Report from './Report'
+import Textbox from './Textbox'
+import { Inputs } from '@bellawatt/use-inputs'
 
-import ExampleComponent from 'use-inputs'
-
-export default class App extends Component {
-  render () {
-    return (
-      <div>
-        <ExampleComponent text='Modern React component module' />
-      </div>
-    )
+export default () => {
+  const defaults = {
+    name: '',
+    animal: 'platypus',
   }
+
+  return (
+    <Inputs defaults={defaults}>
+      <Textbox />
+      <Report />
+    </Inputs>
+  )
 }

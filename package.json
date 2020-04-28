@@ -1,5 +1,5 @@
 {
-  "name": "use-inputs",
+  "name": "@bellawatt/use-inputs",
   "version": "1.0.0",
   "description": "Opinionated Inputs Hook with Context, Query Strings, and Local Storage",
   "author": "@bellawatt",
@@ -24,7 +24,8 @@
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react-dom": "^15.0.0 || ^16.0.0",
+    "@bellawatt/react-hooks": "^1.3.0"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",

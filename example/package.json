@@ -5,11 +5,14 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@bellawatt/react-hooks": "^1.3.1",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-ga": "^2.7.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "^1.1.4",
-    "use-inputs": "file:.."
+    "@bellawatt/use-inputs": "file:.."
   },
   "scripts": {
     "start": "react-scripts start",
