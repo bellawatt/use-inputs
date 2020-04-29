@@ -47,4 +47,4 @@ export default ChildComponent
 
 ## License
 
-MIT © [@bellawatt](https://github.com/@bellawatt)
+MIT © [@bellawatt](https://github.com/bellawatt)
