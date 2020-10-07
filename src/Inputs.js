@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useQueryString, useLocalStorage, useDebounceEffect } from '@bellawatt/react-hooks'
 import InputContext from './context'
 
-const Inputs = ({defaults, children, options}) => {
+const Inputs = ({defaults, children, options, watch = {}}) => {
   const { debounceDelay = 500, localStorageName = 'inputs' } = options || {}
 
   const [urlInputs, updateQueryString] = useQueryString()
@@ -15,7 +15,15 @@ const Inputs = ({defaults, children, options}) => {
     ...(hasUrlInputs ? urlInputs : localInputs),
   })
 
-  const setInput = obj => setInputs(current => ({...current, ...obj}))
+  const setInput = obj => {
+    const watcherChanges = Object.keys(obj).reduce((changes, key) => {
+      if (! watch[key]) return changes;
+
+      return {...changes, ...(watch[key]({...inputs, ...obj, ...changes}))}
+    }, {});
+    
+    setInputs(current => ({...current, ...obj, ...watcherChanges}))
+  }
 
   useDebounceEffect(
     () => {
