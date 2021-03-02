@@ -16,11 +16,11 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}}) => {
     return {...fields, [key]: computed[key]({...originalObj})};
   }, {});
 
-  const [inputs, setInputs] = useState({
-    ...defaults,
-    ...(hasUrlInputs ? urlInputs : localInputs),
-    ...getComputedValues({...defaults, ...(hasUrlInputs ? urlInputs : localInputs)}),
-  })
+  const [inputs, setInputs] = useState(() => {
+    const originalValues = {...defaults, ...(hasUrlInputs ? urlInputs : localInputs)};
+
+    return {...originalValues, ...getComputedValues(originalValues)};
+  });
 
   const setInput = obj => {
     const watcherChanges = Object.keys(obj).reduce((changes, key) => {
@@ -31,9 +31,7 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}}) => {
 
     const objWithWatcher = {...obj, ...watcherChanges};
 
-    const computedValues = getComputedValues(objWithWatcher);
-
-    setInputs(current => ({...current, ...objWithWatcher, ...computedValues}))
+    setInputs(current => ({...current, ...objWithWatcher, ...getComputedValues(objWithWatcher)}))
   }
 
   useDebounceEffect(
@@ -58,6 +56,8 @@ Inputs.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
   ]).isRequired,
   defaults: PropTypes.object,
+  watch: PropTypes.object,
+  computed: PropTypes.object,
   options: PropTypes.shape({
     debounceDelay: PropTypes.number,
     localStorageName: PropTypes.string,
