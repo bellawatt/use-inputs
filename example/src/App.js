@@ -19,8 +19,12 @@ export default () => {
     }
   }
 
+  const computed = {
+    animals: ({animal}) => ['stringray', animal],
+  };
+
   return (
-    <Inputs defaults={defaults} watch={watchers}>
+    <Inputs defaults={defaults} watch={watchers} computed={computed}>
       <Textbox />
       <Report />
     </Inputs>
