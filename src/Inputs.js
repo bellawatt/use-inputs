@@ -31,7 +31,7 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}}) => {
 
     const objWithWatcher = {...obj, ...watcherChanges};
 
-    setInputs(current => ({...current, ...objWithWatcher, ...getComputedValues(objWithWatcher)}))
+    setInputs(current => ({...current, ...objWithWatcher, ...getComputedValues({...current, ...objWithWatcher})}))
   }
 
   useDebounceEffect(
