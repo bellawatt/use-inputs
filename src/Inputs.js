@@ -4,23 +4,38 @@ import { useQueryString, useLocalStorage, useDebounceEffect } from '@bellawatt/r
 import InputContext from './context'
 import { omit } from './helpers';
 
-const Inputs = ({defaults, children, options, watch = {}, computed = {}}) => {
+const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore = []}) => {
   const { debounceDelay = 500, localStorageName = 'inputs' } = options || {}
 
   const [urlInputs, updateQueryString] = useQueryString()
   const [localInputs, setLocalInputs] = useLocalStorage(localStorageName)
   const hasUrlInputs = Object.keys(urlInputs).length > 0
   const computedParams = Object.keys(computed);
+  const fieldsToNotStore = ignore.concat(computedParams);
 
   const getComputedValues = (originalObj) => computedParams.reduce((fields, key) => {
     return {...fields, [key]: computed[key]({...originalObj})};
   }, {});
 
+  const [loading, setLoading] = useState(false);
+
   const [inputs, setInputs] = useState(() => {
+    if (defaults instanceof Promise) { 
+      defaults.then(data => {
+        const originalValues = {...data, ...(hasUrlInputs ? urlInputs : localInputs)};
+
+        setInputs({...originalValues, ...getComputedValues(originalValues)});
+        setLoading(false);
+      });
+    
+      return {};
+    }
+
     const originalValues = {...defaults, ...(hasUrlInputs ? urlInputs : localInputs)};
 
     return {...originalValues, ...getComputedValues(originalValues)};
   });
+
 
   const setInput = obj => {
     const watcherChanges = Object.keys(obj).reduce((changes, key) => {
@@ -36,15 +51,15 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}}) => {
 
   useDebounceEffect(
     () => {
-      updateQueryString(omit(computedParams, inputs))
-      setLocalInputs(omit(computedParams, inputs))
+      updateQueryString(omit(fieldsToNotStore, inputs))
+      setLocalInputs(omit(fieldsToNotStore, inputs))
     },
     debounceDelay,
     [inputs]
   )
 
   return (
-    <InputContext.Provider value={{...inputs, setInput}}>
+    <InputContext.Provider value={{...inputs, setInput, loading}}>
       {children}
     </InputContext.Provider>
   )

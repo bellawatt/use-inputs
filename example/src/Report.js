@@ -2,10 +2,11 @@ import React from 'react'
 import { useInputs } from '@bellawatt/use-inputs'
 
 const Report = () => {
-  const { name, animal, animals } = useInputs()
+  const { name, animal, animals, greeting, loading } = useInputs()
 
-  return (
+  return loading ? <div>Loading...</div> : (
     <div>
+      <h1>{greeting} {name}!</h1>
       <h1>Data I am Holding</h1>
       <pre>
         name: {name} <br />
@@ -13,8 +14,8 @@ const Report = () => {
       </pre>
       <h3>Cool Animals</h3>
       <ol>
-        {animals.map(coolAnimal => (
-          <li key={coolAnimal}>{coolAnimal}</li>
+        {animals.map((coolAnimal, i) => (
+          <li key={i}>{coolAnimal}</li>
         ))}
       </ol>
     </div>
