@@ -17,7 +17,7 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
     return {...fields, [key]: computed[key]({...originalObj})};
   }, {});
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(defaults instanceof Promise);
 
   const [inputs, setInputs] = useState(() => {
     if (defaults instanceof Promise) { 
