@@ -20,11 +20,17 @@ export default () => {
   }
 
   const computed = {
-    animals: ({animal}) => ['stringray', animal],
+    animals: ({animal, greeting}) => ['stringray', animal, greeting],
   };
 
+  const promise = new Promise(resolve => {
+    setTimeout(() => {
+      resolve({...defaults, greeting: 'hello'});
+    }, 3000)
+  });
+
   return (
-    <Inputs defaults={defaults} watch={watchers} computed={computed}>
+    <Inputs defaults={promise} watch={watchers} computed={computed} ignore={['greeting']} >
       <Textbox />
       <Report />
     </Inputs>

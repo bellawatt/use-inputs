@@ -2,9 +2,9 @@ import React from 'react'
 import { useInputs } from '@bellawatt/use-inputs'
 
 const Textbox = () => {
-  const { setInput, name } = useInputs()
+  const { setInput, name, loading } = useInputs()
 
-  return (
+  return loading ? null : (
     <label>
       Name
       <input type="text" value={name} onChange={e => setInput({name: e.currentTarget.value})} />
