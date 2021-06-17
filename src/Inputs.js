@@ -11,42 +11,50 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
   const [localInputs, setLocalInputs] = useLocalStorage(localStorageName)
   const hasUrlInputs = Object.keys(urlInputs).length > 0
   const computedParams = Object.keys(computed);
-  const fieldsToNotStore = ignore.concat(computedParams);
+  const fieldsToNotStore = ignore;
+  const [computedInputs, setComputedInputs] = useState({});
+
+  const [loading, setLoading] = useState(defaults instanceof Promise);
 
   const getComputedValues = (originalObj) => computedParams.reduce((fields, key) => {
     return {...fields, [key]: computed[key]({...originalObj})};
   }, {});
 
-  const [loading, setLoading] = useState(defaults instanceof Promise);
-
   const [inputs, setInputs] = useState(() => {
     if (defaults instanceof Promise) { 
       defaults.then(data => {
-        const originalValues = {...data, ...(hasUrlInputs ? urlInputs : localInputs)};
+        const newInputs = {...data, ...(hasUrlInputs ? urlInputs : localInputs)};
+        setInputs(newInputs);
+        setComputedInputs(getComputedValues(newInputs));
 
-        setInputs({...originalValues, ...getComputedValues(originalValues)});
         setLoading(false);
       });
     
       return {};
     }
 
-    const originalValues = {...defaults, ...(hasUrlInputs ? urlInputs : localInputs)};
-
-    return {...originalValues, ...getComputedValues(originalValues)};
+    const newInputs = {...defaults, ...(hasUrlInputs ? urlInputs : localInputs)};
+    setComputedInputs(getComputedValues(newInputs));
+    return newInputs;
   });
 
 
   const setInput = obj => {
+    const newComputedInputs = getComputedValues({...inputs, ...obj});
+
     const watcherChanges = Object.keys(obj).reduce((changes, key) => {
       if (! watch[key]) return changes;
 
-      return {...changes, ...(watch[key]({...inputs, ...obj, ...changes}))}
+      return {...changes, ...(watch[key]({...inputs, ...obj, ...changes, ...newComputedInputs}))}
     }, {});
 
     const objWithWatcher = {...obj, ...watcherChanges};
 
-    setInputs(current => ({...current, ...objWithWatcher, ...getComputedValues({...current, ...objWithWatcher})}))
+    setInputs(current => {
+      const newInputs = {...current, ...objWithWatcher}
+      setComputedInputs(getComputedValues(newInputs));
+      return newInputs;
+    });
   }
 
   useDebounceEffect(
@@ -59,7 +67,7 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
   )
 
   return (
-    <InputContext.Provider value={{...inputs, setInput, loading}}>
+    <InputContext.Provider value={{...inputs, ...computedInputs, setInput, loading}}>
       {children}
     </InputContext.Provider>
   )
