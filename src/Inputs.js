@@ -25,7 +25,7 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
       defaults.then(data => {
         const newInputs = {...data, ...(hasUrlInputs ? urlInputs : localInputs)};
         setInputs(newInputs);
-        setComputedInputs(getComputedValues(newInputs));
+        setComputedInputs(() => getComputedValues(newInputs));
 
         setLoading(false);
       });
