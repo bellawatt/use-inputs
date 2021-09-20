@@ -132,7 +132,19 @@ Sometimes you may want to store some information in global state that you don't 
   <Inputs defaults={defaults} ignored={['vehicles']}>
     <App />
   </Inputs>
-```  
+``` 
+
+Ignored properties also support both ignoring nested properties and ignoring properties within arrays of objects.
+
+```jsx
+  import listOfVehiclesWithComputedImageUrl from '../data/vehicles';
+  const defaults = {name: 'Brandon', chargers: {name: 'Some Charger', output: 'something that will be computed'} vehicles: listOfVehiclesWithComputedImageUrl};
+
+  <Inputs defaults={defaults} ignored={['chargers.output, vehicles.[].imageUrl']}>
+    <App />
+  </Inputs>
+``` 
+
 
 Ignored properties will never be added to the URL or Local Storage, but they can be accessed and edited the same as any other state. 
 

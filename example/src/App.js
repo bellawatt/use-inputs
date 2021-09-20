@@ -25,12 +25,12 @@ export default () => {
 
   const promise = new Promise(resolve => {
     setTimeout(() => {
-      resolve({...defaults, greeting: 'hello'});
+      resolve({...defaults, greeting: 'hello', vehicles: [{make: 'Ford', model: 'hide this'}, {make: 'Toyota', model: 'hide this'}], super: {secret: {stuff: 'hey', x: 'keep this'}, y: 'keep this, too'}, secret: {keep: 'hey', stuff: 'hey again'}});
     }, 3000)
   });
 
   return (
-    <Inputs defaults={promise} watch={watchers} computed={computed} ignore={['greeting']} >
+    <Inputs defaults={promise} watch={watchers} computed={computed} ignore={['greeting', 'vehicles.[].model', 'vehicles.[].color', 'secret.stuff', 'super.secret.stuff', 'secret.other', 'super.secret.other']} >
       <Textbox />
       <Report />
     </Inputs>

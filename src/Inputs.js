@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import { useQueryString, useLocalStorage, useDebounceEffect } from '@bellawatt/react-hooks'
+import useQueryString from './hooks/useQueryString';
+import useLocalStorage from './hooks/useLocalStorage';
+import useDebounceEffect from '@bellawatt/use-debounce-effect';
 import InputContext from './context'
 import { omit } from './helpers';
 
@@ -59,11 +61,13 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
 
   useDebounceEffect(
     () => {
-      updateQueryString(omit(fieldsToNotStore, inputs))
-      setLocalInputs(omit(fieldsToNotStore, inputs))
+      const inputsToStore = omit(fieldsToNotStore, inputs);
+      updateQueryString(inputsToStore);
+      setLocalInputs(inputsToStore);
     },
     debounceDelay,
-    [inputs]
+    [inputs],
+    !(defaults instanceof Promise),
   )
 
   return (
