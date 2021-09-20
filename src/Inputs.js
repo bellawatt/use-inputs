@@ -1,14 +1,16 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import { useQueryString, useLocalStorage, useDebounceEffect } from '@bellawatt/react-hooks'
+import useQueryString from './hooks/useQueryString';
+import useLocalStorage from './hooks/useLocalStorage';
+import useDebounceEffect from '@bellawatt/use-debounce-effect';
 import InputContext from './context'
 import { omit } from './helpers';
 
-const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore = []}) => {
+const Inputs = ({defaults, children, options, namespace, watch = {}, computed = {}, ignore = []}) => {
   const { debounceDelay = 500, localStorageName = 'inputs' } = options || {}
 
-  const [urlInputs, updateQueryString] = useQueryString()
-  const [localInputs, setLocalInputs] = useLocalStorage(localStorageName)
+  const [urlInputs, updateQueryString] = useQueryString(namespace)
+  const [localInputs, setLocalInputs] = useLocalStorage(`${localStorageName}${namespace ? `.${namespace}` : ''}`)
   const hasUrlInputs = Object.keys(urlInputs).length > 0
   const computedParams = Object.keys(computed);
   const fieldsToNotStore = ignore;
@@ -59,8 +61,9 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
 
   useDebounceEffect(
     () => {
-      updateQueryString(omit(fieldsToNotStore, inputs))
-      setLocalInputs(omit(fieldsToNotStore, inputs))
+      const fieldsToUpdate = omit(fieldsToNotStore, inputs);
+      updateQueryString(fieldsToUpdate); 
+      setLocalInputs(fieldsToUpdate);
     },
     debounceDelay,
     [inputs]
@@ -85,6 +88,7 @@ Inputs.propTypes = {
     debounceDelay: PropTypes.number,
     localStorageName: PropTypes.string,
   }),
+  namespace: PropTypes.string,
 }
 
 export default Inputs

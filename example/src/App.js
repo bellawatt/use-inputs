@@ -9,10 +9,14 @@ export default () => {
     animal: 'platypus',
   }
 
+  const readOnly = {
+    someData: 'hello',
+  }
+
   const watchers = {
     name: ({name}) => {
       if (name.length % 2 === 0) {
-        return {animal: 'playtpus'};
+        return {animal: 'platypus'};
       }
 
       return {animal: 'manatee'};
@@ -25,14 +29,20 @@ export default () => {
 
   const promise = new Promise(resolve => {
     setTimeout(() => {
-      resolve({...defaults, greeting: 'hello'});
+      resolve({...defaults, greeting: 'hello', ...readOnly});
     }, 3000)
   });
 
   return (
-    <Inputs defaults={promise} watch={watchers} computed={computed} ignore={['greeting']} >
-      <Textbox />
-      <Report />
-    </Inputs>
+    <div>
+      <Inputs namespace="n1" defaults={promise} watch={watchers} computed={computed} ignore={['greeting', ...Object.keys(readOnly)]} >
+        <Textbox />
+        <Report />
+      </Inputs>
+      <Inputs namespace="n2" defaults={promise} watch={watchers} computed={computed} ignore={['greeting', ...Object.keys(readOnly)]} >
+        <Textbox />
+        <Report />
+      </Inputs>
+    </div>
   )
 }
