@@ -42,7 +42,7 @@ const Inputs = ({defaults, children, options, watch = {}, computed = {}, ignore 
   const setInput = obj => {
     const newComputedInputs = getComputedValues({...inputs, ...obj});
 
-    const watcherChanges = Object.keys(obj).reduce((changes, key) => {
+    const watcherChanges = Object.keys({...newComputedInputs, ...obj}).reduce((changes, key) => {
       if (! watch[key]) return changes;
 
       return {...changes, ...(watch[key]({...inputs, ...obj, ...changes, ...newComputedInputs}))}
